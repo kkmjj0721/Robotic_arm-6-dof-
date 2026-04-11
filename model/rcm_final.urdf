@@ -1,0 +1,282 @@
+<?xml version="1.0"?>
+<robot name="rcm_final_model">
+  <material name="robot_blue">
+    <color rgba="0.13 0.42 0.92 1.0"/>
+  </material>
+  <material name="joint_gray">
+    <color rgba="0.56 0.58 0.62 1.0"/>
+  </material>
+  <material name="sleeve_gray">
+    <color rgba="0.42 0.44 0.48 1.0"/>
+  </material>
+  <material name="tool_gray">
+    <color rgba="0.74 0.74 0.74 1.0"/>
+  </material>
+  <material name="tip_red">
+    <color rgba="0.88 0.18 0.18 1.0"/>
+  </material>
+
+  <link name="base_link">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.35"/>
+      <inertia ixx="0.00018" ixy="0.0" ixz="0.0" iyy="0.00018" iyz="0.0" izz="0.00018"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.03"/>
+      </geometry>
+      <material name="joint_gray"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.03"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="q1" type="revolute">
+    <parent link="base_link"/>
+    <child link="pedestal_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-3.14159" upper="3.14159" effort="8.0" velocity="3.0"/>
+    <dynamics damping="0.10" friction="0.02"/>
+  </joint>
+
+  <link name="pedestal_link">
+    <inertial>
+      <origin xyz="0 0 0.06" rpy="0 0 0"/>
+      <mass value="0.20"/>
+      <inertia ixx="0.00010" ixy="0.0" ixz="0.0" iyy="0.00010" iyz="0.0" izz="0.00004"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0.06" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.014" length="0.12"/>
+      </geometry>
+      <material name="joint_gray"/>
+    </visual>
+    <visual>
+      <origin xyz="0 0 0.12" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.018"/>
+      </geometry>
+      <material name="robot_blue"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.06" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.014" length="0.12"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="q2" type="revolute">
+    <parent link="pedestal_link"/>
+    <child link="upper_arm_link"/>
+    <origin xyz="0 0 0.12" rpy="0 0 0"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="-1.91986" upper="1.91986" effort="8.0" velocity="3.0"/>
+    <dynamics damping="0.10" friction="0.02"/>
+  </joint>
+
+  <link name="upper_arm_link">
+    <inertial>
+      <origin xyz="0 0 0.06" rpy="0 0 0"/>
+      <mass value="0.45"/>
+      <inertia ixx="0.00145" ixy="0.0" ixz="0.0" iyy="0.00145" iyz="0.0" izz="0.00008"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0.06" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.018" length="0.12"/>
+      </geometry>
+      <material name="robot_blue"/>
+    </visual>
+    <visual>
+      <origin xyz="0 0 0.12" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.022"/>
+      </geometry>
+      <material name="robot_blue"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.06" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.018" length="0.12"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="q3" type="revolute">
+    <parent link="upper_arm_link"/>
+    <child link="forearm_link"/>
+    <origin xyz="0 0 0.12" rpy="0 0 0"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="-2.44346" upper="2.44346" effort="6.0" velocity="3.0"/>
+    <dynamics damping="0.08" friction="0.02"/>
+  </joint>
+
+  <link name="forearm_link">
+    <inertial>
+      <origin xyz="0 0 0.06" rpy="0 0 0"/>
+      <mass value="0.22"/>
+      <inertia ixx="0.00026" ixy="0.0" ixz="0.0" iyy="0.00026" iyz="0.0" izz="0.00002"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0.06" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.012" length="0.12"/>
+      </geometry>
+      <material name="robot_blue"/>
+    </visual>
+    <visual>
+      <origin xyz="0 0 0.12" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.014"/>
+      </geometry>
+      <material name="robot_blue"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.06" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.012" length="0.12"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="tool_local_link">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.005"/>
+      <inertia ixx="0.000001" ixy="0.0" ixz="0.0" iyy="0.000001" iyz="0.0" izz="0.000001"/>
+    </inertial>
+  </link>
+
+  <joint name="tool_local_mount" type="fixed">
+    <parent link="forearm_link"/>
+    <child link="tool_local_link"/>
+    <origin xyz="0 0 0.12" rpy="-1.57079632679 0 -1.57079632679"/>
+  </joint>
+
+  <link name="tool_yaw_link">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.005"/>
+      <inertia ixx="0.000001" ixy="0.0" ixz="0.0" iyy="0.000001" iyz="0.0" izz="0.000001"/>
+    </inertial>
+  </link>
+
+  <joint name="tool_yaw" type="revolute">
+    <parent link="tool_local_link"/>
+    <child link="tool_yaw_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-3.14159" upper="3.14159" effort="3.0" velocity="4.0"/>
+    <dynamics damping="0.15" friction="0.05"/>
+  </joint>
+
+  <link name="tool_pitch_link">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.005"/>
+      <inertia ixx="0.000001" ixy="0.0" ixz="0.0" iyy="0.000001" iyz="0.0" izz="0.000001"/>
+    </inertial>
+  </link>
+
+  <joint name="tool_pitch" type="revolute">
+    <parent link="tool_yaw_link"/>
+    <child link="tool_pitch_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <axis xyz="-1 0 0"/>
+    <limit lower="-1.57080" upper="1.57080" effort="3.0" velocity="4.0"/>
+    <dynamics damping="0.15" friction="0.05"/>
+  </joint>
+
+  <link name="tool_sleeve_link">
+    <inertial>
+      <origin xyz="0 -0.09 0" rpy="0 0 0"/>
+      <mass value="0.10"/>
+      <inertia ixx="0.00030" ixy="0.0" ixz="0.0" iyy="0.00030" iyz="0.0" izz="0.00001"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.016"/>
+      </geometry>
+      <material name="joint_gray"/>
+    </visual>
+    <visual>
+      <origin xyz="0 -0.09 0" rpy="1.57079632679 0 0"/>
+      <geometry>
+        <cylinder radius="0.0095" length="0.18"/>
+      </geometry>
+      <material name="sleeve_gray"/>
+    </visual>
+    <visual>
+      <origin xyz="0 -0.18 0" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.011"/>
+      </geometry>
+      <material name="sleeve_gray"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.016"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin xyz="0 -0.09 0" rpy="1.57079632679 0 0"/>
+      <geometry>
+        <cylinder radius="0.0095" length="0.18"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="tool_pitch_mount" type="fixed">
+    <parent link="tool_pitch_link"/>
+    <child link="tool_sleeve_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <joint name="tool_slide" type="prismatic">
+    <parent link="tool_sleeve_link"/>
+    <child link="tool_inner_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <axis xyz="0 -1 0"/>
+    <limit lower="0.0" upper="0.15" effort="3.0" velocity="0.25"/>
+    <dynamics damping="0.20" friction="0.05"/>
+  </joint>
+
+  <link name="tool_inner_link">
+    <inertial>
+      <origin xyz="0 -0.17 0" rpy="0 0 0"/>
+      <mass value="0.12"/>
+      <inertia ixx="0.00082" ixy="0.0" ixz="0.0" iyy="0.00082" iyz="0.0" izz="0.00001"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 -0.17 0" rpy="1.57079632679 0 0"/>
+      <geometry>
+        <cylinder radius="0.006" length="0.34"/>
+      </geometry>
+      <material name="tool_gray"/>
+    </visual>
+    <visual>
+      <origin xyz="0 -0.34 0" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.010"/>
+      </geometry>
+      <material name="tip_red"/>
+    </visual>
+    <collision>
+      <origin xyz="0 -0.17 0" rpy="1.57079632679 0 0"/>
+      <geometry>
+        <cylinder radius="0.006" length="0.34"/>
+      </geometry>
+    </collision>
+  </link>
+</robot>
