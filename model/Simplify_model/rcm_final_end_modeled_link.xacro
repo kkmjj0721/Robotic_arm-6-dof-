@@ -1,5 +1,48 @@
 <?xml version="1.0"?>
-<robot name="rcm_final_model_proportional">
+<robot
+  name="rcm_final_model_proportional_end_modeled_link"
+  xmlns:xacro="http://www.ros.org/wiki/xacro"
+>
+  <xacro:property name="tool_clamp_sleeve_length" value="0.10"/>
+  <xacro:property name="tool_clamp_sleeve_start_y" value="-0.03"/>
+  <xacro:property name="tool_clamp_sleeve_half_length" value="${tool_clamp_sleeve_length / 2.0}"/>
+  <xacro:property name="tool_clamp_sleeve_center_y" value="${tool_clamp_sleeve_start_y - tool_clamp_sleeve_half_length}"/>
+  <xacro:property name="tool_clamp_front_y" value="${tool_clamp_sleeve_start_y - tool_clamp_sleeve_length}"/>
+  <xacro:property name="tool_clamp_inertial_y" value="-0.05"/>
+  <xacro:property name="tool_inner_length" value="0.28"/>
+  <xacro:property name="tool_inner_radius" value="0.004"/>
+  <xacro:property name="tool_inner_mass" value="0.15"/>
+  <xacro:property name="tool_inner_half_length" value="${tool_inner_length / 2.0}"/>
+  <xacro:property name="tool_inner_tip_y" value="${-tool_inner_length}"/>
+  <xacro:property
+    name="tool_inner_inertia_trans"
+    value="${tool_inner_mass * (3.0 * tool_inner_radius * tool_inner_radius + tool_inner_length * tool_inner_length) / 12.0}"
+  />
+  <xacro:property
+    name="tool_inner_inertia_axial"
+    value="${0.5 * tool_inner_mass * tool_inner_radius * tool_inner_radius}"
+  />
+  <xacro:property name="modeled_link_length" value="0.32"/>
+  <xacro:property name="modeled_link_radius" value="0.0035"/>
+  <xacro:property name="modeled_link_pitch_deg" value="30.0"/>
+  <xacro:property name="modeled_link_pitch_rad" value="${modeled_link_pitch_deg * 3.141592653589793 / 180.0}"/>
+  <xacro:property name="modeled_link_connection_ratio" value="0.25"/>
+  <xacro:property name="modeled_link_mass" value="0.03"/>
+  <xacro:property name="modeled_link_half_length" value="${modeled_link_length / 2.0}"/>
+  <xacro:property name="modeled_link_center_y" value="${(modeled_link_connection_ratio - 0.5) * modeled_link_length}"/>
+  <xacro:property name="modeled_link_tip_y" value="${-(1.0 - modeled_link_connection_ratio) * modeled_link_length}"/>
+  <xacro:property
+    name="modeled_link_inertia_trans"
+    value="${modeled_link_mass * (3.0 * modeled_link_radius * modeled_link_radius + modeled_link_length * modeled_link_length) / 12.0}"
+  />
+  <xacro:property
+    name="modeled_link_inertia_axial"
+    value="${0.5 * modeled_link_mass * modeled_link_radius * modeled_link_radius}"
+  />
+  <!--
+    Because the local tool axis is aligned with -Y, the visible pitch offset is
+    implemented as a fixed-joint rotation about the child X axis.
+  -->
   <material name="robot_blue">
     <color rgba="0.13 0.42 0.92 1.0"/>
   </material>
@@ -241,7 +284,7 @@
 
   <link name="tool_clamp_link">
     <inertial>
-      <origin xyz="0 -0.045 0" rpy="0 0 0"/>
+      <origin xyz="0 ${tool_clamp_inertial_y} 0" rpy="0 0 0"/>
       <mass value="0.100"/>
       <inertia ixx="0.00021" ixy="0.0" ixz="0.0" iyy="0.00021" iyz="0.0" izz="0.00002"/>
     </inertial>
@@ -253,14 +296,14 @@
       <material name="clamp_black"/>
     </visual>
     <visual>
-      <origin xyz="0 -0.10 0" rpy="1.57079632679 0 0"/>
+      <origin xyz="0 ${tool_clamp_sleeve_center_y} 0" rpy="1.57079632679 0 0"/>
       <geometry>
-        <cylinder radius="0.0095" length="0.14"/>
+        <cylinder radius="0.0095" length="${tool_clamp_sleeve_length}"/>
       </geometry>
       <material name="sleeve_gray"/>
     </visual>
     <visual>
-      <origin xyz="0 -0.17 0" rpy="0 0 0"/>
+      <origin xyz="0 ${tool_clamp_front_y} 0" rpy="0 0 0"/>
       <geometry>
         <sphere radius="0.009"/>
       </geometry>
@@ -273,9 +316,9 @@
       </geometry>
     </collision>
     <collision>
-      <origin xyz="0 -0.10 0" rpy="1.57079632679 0 0"/>
+      <origin xyz="0 ${tool_clamp_sleeve_center_y} 0" rpy="1.57079632679 0 0"/>
       <geometry>
-        <cylinder radius="0.0095" length="0.14"/>
+        <cylinder radius="0.0095" length="${tool_clamp_sleeve_length}"/>
       </geometry>
     </collision>
   </link>
@@ -294,28 +337,69 @@
 
   <link name="tool_inner_link">
     <inertial>
-      <origin xyz="0 -0.25 0" rpy="0 0 0"/>
-      <mass value="0.15"/>
-      <inertia ixx="0.00100" ixy="0.0" ixz="0.0" iyy="0.00100" iyz="0.0" izz="0.00001"/>
+      <origin xyz="0 ${-tool_inner_half_length} 0" rpy="0 0 0"/>
+      <mass value="${tool_inner_mass}"/>
+      <inertia
+        ixx="${tool_inner_inertia_trans}"
+        ixy="0.0"
+        ixz="0.0"
+        iyy="${tool_inner_inertia_axial}"
+        iyz="0.0"
+        izz="${tool_inner_inertia_trans}"
+      />
     </inertial>
     <visual>
-      <origin xyz="0 -0.25 0" rpy="1.57079632679 0 0"/>
+      <origin xyz="0 ${-tool_inner_half_length} 0" rpy="1.57079632679 0 0"/>
       <geometry>
-        <cylinder radius="0.004" length="0.50"/>
+        <cylinder radius="${tool_inner_radius}" length="${tool_inner_length}"/>
       </geometry>
       <material name="tool_gray"/>
     </visual>
     <visual>
-      <origin xyz="0 -0.50 0" rpy="0 0 0"/>
+      <origin xyz="0 ${tool_inner_tip_y} 0" rpy="0 0 0"/>
       <geometry>
         <sphere radius="0.010"/>
       </geometry>
       <material name="tip_red"/>
     </visual>
     <collision>
-      <origin xyz="0 -0.25 0" rpy="1.57079632679 0 0"/>
+      <origin xyz="0 ${-tool_inner_half_length} 0" rpy="1.57079632679 0 0"/>
       <geometry>
-        <cylinder radius="0.004" length="0.50"/>
+        <cylinder radius="${tool_inner_radius}" length="${tool_inner_length}"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="tool_modeled_link_mount" type="fixed">
+    <parent link="tool_inner_link"/>
+    <child link="tool_modeled_link"/>
+    <origin xyz="0 ${tool_inner_tip_y} 0" rpy="${modeled_link_pitch_rad} 0 0"/>
+  </joint>
+
+  <link name="tool_modeled_link">
+    <inertial>
+      <origin xyz="0 ${modeled_link_center_y} 0" rpy="0 0 0"/>
+      <mass value="${modeled_link_mass}"/>
+      <inertia
+        ixx="${modeled_link_inertia_trans}"
+        ixy="0.0"
+        ixz="0.0"
+        iyy="${modeled_link_inertia_axial}"
+        iyz="0.0"
+        izz="${modeled_link_inertia_trans}"
+      />
+    </inertial>
+    <visual>
+      <origin xyz="0 ${modeled_link_center_y} 0" rpy="1.57079632679 0 0"/>
+      <geometry>
+        <cylinder radius="${modeled_link_radius}" length="${modeled_link_length}"/>
+      </geometry>
+      <material name="tool_gray"/>
+    </visual>
+    <collision>
+      <origin xyz="0 ${modeled_link_center_y} 0" rpy="1.57079632679 0 0"/>
+      <geometry>
+        <cylinder radius="${modeled_link_radius}" length="${modeled_link_length}"/>
       </geometry>
     </collision>
   </link>

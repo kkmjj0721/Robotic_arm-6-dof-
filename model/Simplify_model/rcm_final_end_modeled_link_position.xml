@@ -1,0 +1,394 @@
+<mujoco model="rcm_final_model_proportional_end_modeled_link">
+  <compiler angle="radian" inertiafromgeom="false"/>
+
+  <default>
+    <joint limited="true"/>
+    <site type="sphere"/>
+  </default>
+
+  <asset>
+    <texture
+      name="skybox_soft"
+      type="skybox"
+      builtin="gradient"
+      rgb1="0.84 0.90 0.98"
+      rgb2="0.98 0.99 1.00"
+      width="512"
+      height="3072"
+    />
+    <texture
+      name="floor_checker"
+      type="2d"
+      builtin="checker"
+      rgb1="0.20 0.22 0.26"
+      rgb2="0.12 0.14 0.17"
+      width="512"
+      height="512"
+      mark="edge"
+      markrgb="0.30 0.34 0.40"
+    />
+    <material
+      name="floor_grid"
+      texture="floor_checker"
+      texrepeat="8 8"
+      texuniform="true"
+      reflectance="0.06"
+      shininess="0.15"
+      rgba="1 1 1 1"
+    />
+    <material
+      name="backdrop_mat"
+      rgba="0.90 0.93 0.97 1"
+      reflectance="0.03"
+      shininess="0.08"
+    />
+    <material
+      name="accent_mat"
+      rgba="0.70 0.78 0.88 1"
+      reflectance="0.02"
+      shininess="0.05"
+    />
+  </asset>
+
+  <visual>
+    <headlight ambient="0.38 0.38 0.40" diffuse="0.72 0.72 0.70" specular="0.12 0.12 0.12"/>
+    <rgba haze="0.95 0.97 1.00 1"/>
+    <map znear="0.01"/>
+  </visual>
+
+  <worldbody>
+    <light
+      name="key_light"
+      directional="true"
+      pos="1.6 -1.3 2.4"
+      dir="-0.5 0.4 -1.0"
+      diffuse="0.95 0.94 0.90"
+      specular="0.18 0.18 0.18"
+      castshadow="false"
+    />
+    <light
+      name="fill_light"
+      directional="true"
+      pos="-1.2 1.4 1.8"
+      dir="0.4 -0.5 -0.8"
+      diffuse="0.38 0.44 0.50"
+      specular="0.05 0.05 0.05"
+      castshadow="false"
+    />
+    <geom
+      name="studio_floor"
+      type="plane"
+      pos="0 0 -0.04"
+      size="2.8 2.8 0.05"
+      material="floor_grid"
+      contype="0"
+      conaffinity="0"
+    />
+    <geom
+      name="backdrop_wall"
+      type="box"
+      pos="0 1.75 0.85"
+      size="2.4 0.03 0.95"
+      material="backdrop_mat"
+      contype="0"
+      conaffinity="0"
+    />
+    <geom
+      name="backdrop_left"
+      type="box"
+      pos="-1.25 1.15 0.70"
+      euler="0 0 0.32"
+      size="0.75 0.03 0.75"
+      material="backdrop_mat"
+      contype="0"
+      conaffinity="0"
+    />
+    <geom
+      name="backdrop_right"
+      type="box"
+      pos="1.25 1.15 0.70"
+      euler="0 0 -0.32"
+      size="0.75 0.03 0.75"
+      material="backdrop_mat"
+      contype="0"
+      conaffinity="0"
+    />
+    <geom
+      name="accent_plinth"
+      type="cylinder"
+      pos="0 0 -0.03"
+      size="0.26 0.015"
+      material="accent_mat"
+      contype="0"
+      conaffinity="0"
+    />
+
+    <body name="pivot_ref" pos="0 0 0.3">
+      <site
+        name="pivot_site"
+        pos="0 0 0"
+        size="0.008"
+        rgba="0.92 0.16 0.16 0.35"
+      />
+    </body>
+
+    <body name="base_link">
+      <inertial pos="0 0 0" mass="0.35" diaginertia="0.00018 0.00018 0.00018"/>
+      <geom name="base_link_geom" type="sphere" size="0.03" rgba="0.56 0.58 0.62 1"/>
+
+      <body name="pedestal_link">
+        <inertial pos="0 0 0.15" mass="0.45" diaginertia="0.00045 0.00045 0.00004"/>
+        <joint
+          name="q1"
+          pos="0 0 0"
+          axis="0 0 1"
+          range="-3.14159 3.14159"
+          damping="0.10"
+          frictionloss="0.02"
+        />
+        <geom
+          name="pedestal_link_geom"
+          type="cylinder"
+          pos="0 0 0.15"
+          size="0.014 0.15"
+          rgba="0.13 0.42 0.92 1"
+        />
+        <geom
+          name="pedestal_cap_visual"
+          type="sphere"
+          pos="0 0 0.30"
+          size="0.018"
+          rgba="0.13 0.42 0.92 1"
+          contype="0"
+          conaffinity="0"
+        />
+
+        <body name="upper_arm_link" pos="0 0 0.30">
+          <inertial pos="0 0 0.13" mass="0.80" diaginertia="0.00250 0.00250 0.00008"/>
+          <joint
+            name="q2"
+            pos="0 0 0"
+            axis="1 0 0"
+            range="-1.91986 1.91986"
+            damping="0.10"
+            frictionloss="0.02"
+          />
+          <geom
+            name="upper_arm_link_geom"
+            type="cylinder"
+            pos="0 0 0.13"
+            size="0.018 0.13"
+            rgba="0.13 0.42 0.92 1"
+          />
+          <geom
+            name="upper_arm_cap_visual"
+            type="sphere"
+            pos="0 0 0.26"
+            size="0.022"
+            rgba="0.13 0.42 0.92 1"
+            contype="0"
+            conaffinity="0"
+          />
+
+          <body name="forearm_link" pos="0 0 0.26">
+            <inertial pos="0 0 0.13" mass="0.45" diaginertia="0.00055 0.00055 0.00002"/>
+            <joint
+              name="q3"
+              pos="0 0 0"
+              axis="1 0 0"
+              range="-2.44346 2.44346"
+              damping="0.08"
+              frictionloss="0.02"
+            />
+            <geom
+              name="forearm_link_geom"
+              type="cylinder"
+              pos="0 0 0.13"
+              size="0.012 0.13"
+              rgba="0.13 0.42 0.92 1"
+            />
+            <geom
+              name="forearm_cap_visual"
+              type="sphere"
+              pos="0 0 0.26"
+              size="0.014"
+              rgba="0.13 0.42 0.92 1"
+              contype="0"
+              conaffinity="0"
+            />
+
+            <body name="tool_local_body" pos="0 0 0.26" quat="0.5 -0.5 0.5 -0.5">
+              <inertial pos="0 0 0" mass="0.005" diaginertia="0.000001 0.000001 0.000001"/>
+
+              <body name="tool_yaw_link">
+                <inertial pos="0 -0.010 0" mass="0.030" diaginertia="0.000010 0.000010 0.000008"/>
+                <joint
+                  name="tool_yaw"
+                  pos="0 0 0"
+                  axis="0 0 1"
+                  range="-3.14159 3.14159"
+                  damping="0.35"
+                  frictionloss="0.18"
+                />
+                <geom
+                  name="tool_yaw_pin_visual"
+                  type="cylinder"
+                  pos="0 0 0"
+                  size="0.005 0.015"
+                  rgba="0.56 0.58 0.62 1"
+                  contype="0"
+                  conaffinity="0"
+                />
+                <geom
+                  name="tool_yaw_block_geom"
+                  type="box"
+                  pos="0 -0.014 0"
+                  size="0.015 0.014 0.010"
+                  rgba="0.42 0.44 0.48 1"
+                />
+
+                <body name="tool_pitch_link">
+                  <inertial pos="0 -0.018 0" mass="0.040" diaginertia="0.000014 0.000012 0.000010"/>
+                  <joint
+                    name="tool_pitch"
+                    pos="0 0 0"
+                    axis="-1 0 0"
+                    range="-1.57080 1.57080"
+                    damping="0.35"
+                    frictionloss="0.18"
+                  />
+                  <geom
+                    name="tool_pitch_pin_visual"
+                    type="cylinder"
+                    pos="0 0 0"
+                    quat="0.70710678 0 0.70710678 0"
+                    size="0.0045 0.02"
+                    rgba="0.56 0.58 0.62 1"
+                    contype="0"
+                    conaffinity="0"
+                  />
+                  <geom
+                    name="tool_pitch_block_geom"
+                    type="box"
+                    pos="0 -0.018 0"
+                    size="0.012 0.018 0.012"
+                    rgba="0.42 0.44 0.48 1"
+                  />
+
+                  <body name="tool_clamp_link">
+                    <inertial pos="0 -0.05 0" mass="0.100" diaginertia="0.00021 0.00021 0.00002"/>
+                    <geom
+                      name="tool_clamp_body_geom"
+                      type="box"
+                      pos="0 -0.032 0"
+                      size="0.011 0.018 0.025"
+                      rgba="0.16 0.17 0.19 1"
+                    />
+                    <geom
+                      name="tool_clamp_sleeve_geom"
+                      type="cylinder"
+                      pos="0 -0.08 0"
+                      quat="0.70710678 0.70710678 0 0"
+                      size="0.0095 0.05"
+                      rgba="0.42 0.44 0.48 1"
+                    />
+                    <geom
+                      name="tool_clamp_front_visual"
+                      type="sphere"
+                      pos="0 -0.13 0"
+                      size="0.009"
+                      rgba="0.56 0.58 0.62 1"
+                      contype="0"
+                      conaffinity="0"
+                    />
+                    <site
+                      name="tool_tcp"
+                      pos="0 -0.13 0"
+                      size="0.0035"
+                      rgba="0.14 0.80 0.24 1"
+                    />
+
+                    <body name="tool_inner_link">
+                      <inertial pos="0 -0.14 0" mass="0.15" diaginertia="0.00098060 0.00000120 0.00098060"/>
+                      <geom
+                        name="tool_inner_rod_geom"
+                        type="cylinder"
+                        pos="0 -0.14 0"
+                        quat="0.70710678 0.70710678 0 0"
+                        size="0.004 0.14"
+                        rgba="0.74 0.74 0.74 1"
+                      />
+                      <geom
+                        name="tool_tip_visual"
+                        type="sphere"
+                        pos="0 -0.28 0"
+                        size="0.010"
+                        rgba="0.88 0.18 0.18 1"
+                        contype="0"
+                        conaffinity="0"
+                      />
+                    <site
+                      name="tool_tip"
+                      pos="0 -0.28 0"
+                      size="0.004"
+                      rgba="0.88 0.18 0.18 1"
+                    />
+
+                    <body name="tool_modeled_link" pos="0 -0.28 0" euler="0.5235987755982988 0 0">
+                      <inertial pos="0 -0.08 0" mass="0.03" diaginertia="0.00025609 0.00000018 0.00025609"/>
+                      <geom
+                        name="tool_modeled_link_geom"
+                        type="cylinder"
+                        pos="0 -0.08 0"
+                        quat="0.70710678 0.70710678 0 0"
+                        size="0.0035 0.16"
+                        rgba="0.74 0.74 0.74 1"
+                      />
+                      <site
+                        name="tool_modeled_link_tip"
+                        pos="0 -0.24 0"
+                        size="0.0035"
+                        rgba="0.96 0.52 0.18 1"
+                      />
+                    </body>
+                  </body>
+                </body>
+              </body>
+            </body>
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+
+  <actuator>
+    <position
+      name="q1_pos"
+      joint="q1"
+      kp="80"
+      ctrlrange="-3.14159 3.14159"
+      ctrllimited="true"
+      forcerange="-8 8"
+      forcelimited="true"
+    />
+    <position
+      name="q2_pos"
+      joint="q2"
+      kp="80"
+      ctrlrange="-1.91986 1.91986"
+      ctrllimited="true"
+      forcerange="-8 8"
+      forcelimited="true"
+    />
+    <position
+      name="q3_pos"
+      joint="q3"
+      kp="60"
+      ctrlrange="-2.44346 2.44346"
+      ctrllimited="true"
+      forcerange="-6 6"
+      forcelimited="true"
+    />
+  </actuator>
+</mujoco>
